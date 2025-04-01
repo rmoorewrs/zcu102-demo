@@ -1,9 +1,16 @@
 # zcu102-demo
 vxworks demo script for zcu102
 
-How to use it:
-- prerequisite: VxWorks installation
+
+## Prerequisites: 
+- Valid VxWorks installation
+- ZCU102 with u-boot
+- tftp server (option, only if you want to network boot from u-boot)
 - edit the set_wrenv_2403.sh or set_wrenv_2503.sh to match your installation
+
+Note: to customize the IP addresses for your target and tftp server, edit the bootarg lines in the `generate_patch_file()` functions inside of the two create scripts
+
+## Instructions:
 
 ### 1) Change directory into the `ws` workspace
 
