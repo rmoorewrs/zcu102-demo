@@ -98,6 +98,7 @@ generate_patch_file ${PATCH_FILE}
 patch -p0 < ${PATCH_FILE}
 cd ..
 
-vxprj build -j
+vxprj vip build -j
+cd $MY_WS_DIR
 
-echo Done
+echo cp zynqmp_a53-vip/default/vxWorks.bin /tftpboot/vxWorks_a53.bin
