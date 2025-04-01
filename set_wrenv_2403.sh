@@ -1,1 +1,1 @@
-/opt/wr/vx/vx2503/wrenv.sh -p vxworks/25.03
+/opt/wr/vx/vx2403/wrenv.sh -p vxworks/24.03

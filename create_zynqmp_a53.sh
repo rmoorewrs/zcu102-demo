@@ -41,7 +41,7 @@ cat << EOF > $1
      chosen
          {
 -        bootargs = "gem(0,0)host:vxWorks h=192.168.1.2 e=192.168.1.6:ffffff00 g=192.168.1.1 u=target pw=vxTarget";
-+        bootargs = "gem(0,0)host:vxWorks h=10.10.12.52:ffffff00 e=10.10.12.30:ffffff00 g=10.10.12.1 u=target pw=vxTarget";
++        bootargs = "gem(0,0)host:vxWorks h=10.10.15.52:ffffff00 e=10.10.15.30:ffffff00 g=10.10.15.1 u=target pw=vxTarget";
          stdout-path = "serial0";
          };
      };
