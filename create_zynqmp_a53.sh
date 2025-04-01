@@ -68,7 +68,7 @@ vxprj vip component add $VIP_NAME INCLUDE_STANDALONE_DTB
 vxprj vip component add $VIP_NAME INCLUDE_DEBUG_AGENT_START
 vxprj vip component add $VIP_NAME INCLUDE_IPWRAP_IFCONFIG
 vxprj vip component add $VIP_NAME INCLUDE_IFCONFIG
-vxprj vip parameter set $VIP_NAME IFCONFIG_1 '"ifname gem0","devname gem","inet 10.10.12.30/24","gateway 10.10.12.1"'
+vxprj vip parameter set $VIP_NAME IFCONFIG_1 '"ifname gem0","devname gem","inet 10.10.15.30/24","gateway 10.10.15.1"'
 vxprj vip component add $VIP_NAME INCLUDE_PING
 vxprj vip component add $VIP_NAME INCLUDE_IPPING_CMD
 vxprj vip component add $VIP_NAME INCLUDE_IPTELNETS
