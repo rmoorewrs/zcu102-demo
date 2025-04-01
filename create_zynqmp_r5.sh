@@ -46,9 +46,9 @@ EOF
 }
 
 # build the VSB
-#vxprj vsb create -force -ilp32 -bsp $BSP_NAME -force -S $VSB_NAME
-#cd $VSB_NAME
-#vxprj vsb build -j
+vxprj vsb create -force -ilp32 -bsp $BSP_NAME -force -S $VSB_NAME
+cd $VSB_NAME
+vxprj vsb build -j
 
 
 # create, configure and build VIP
