@@ -90,6 +90,13 @@ vxprj vip component add $VIP_NAME INCLUDE_DOSFS_SHOW
 vxprj vip component add $VIP_NAME INCLUDE_DOSFS_PRTMSG_LEVEL
 vxprj vip component add $VIP_NAME INCLUDE_DOSFS_MAIN
 
+# Debug
+vxprj vip component add $VIP_NAME INCLUDE_ANALYSIS_AGENT
+vxprj vip component add $VIP_NAME INCLUDE_ANALYSIS_DEBUG_SUPPORT
+vxprj vip component add $VIP_NAME INCLUDE_DEBUG_AGENT INCLUDE_DEBUG_AGENT_START 
+vxprj vip component add $VIP_NAME INCLUDE_WINDVIEW INCLUDE_WVUPLOAD_FILE
+vxprj vip component add $VIP_NAME INCLUDE_VXBUS_SHOW
+vxprj vip component add $VIP_NAME INCLUDE_VXEVENTS
 
 # patch the dts file
 cd ${BSP_NAME}
