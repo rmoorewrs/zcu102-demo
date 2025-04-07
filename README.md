@@ -51,3 +51,24 @@ In order to import in workbench do the following:
 ```
 File->Import->VxWorks->VxWorks VSB
 ```
+
+### 6) Booting both cores from u-boot (both kernels have built-in DTB)
+
+```
+tftpboot 0x100000 vxWorks_a53.bin
+tftpboot 0x78100000 vxWorks_r5.bin
+zynqmp tcminit split; cpu 4 release 78100000 split; go 100000
+```
+
+### 7) Booting only on A53 Core from u-boot
+```
+tftpboot 0x100000 uVxWorks
+tftpboot 0x0f000000 xlnx-zcu102-rev-1.1.dtb
+bootm 0x100000 - 0x0f000000
+```
+
+### 8) Booting only on R5 Core with Ethernet NIC from u-boot
+```
+tftpboot 0x78100000 vxWorks_r5_eth.bin
+zynqmp tcminit split;cpu 4 release 78100000 split; cpu 0 disable
+```
