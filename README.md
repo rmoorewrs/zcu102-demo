@@ -61,9 +61,15 @@ zynqmp tcminit split; cpu 4 release 78100000 split; go 100000
 ```
 
 ### 7) Booting only on A53 Core from u-boot
+with separate kernel and DTB
 ```
-tftpboot 0x100000 uVxWorks
+tftpboot 0x100000 vxWorks_a53.bin
 tftpboot 0x0f000000 xlnx-zcu102-rev-1.1.dtb
+bootm 0x100000 - 0x0f000000
+```
+with built-in DTB
+```
+tftpboot 0x100000 vxWorks_a53.bin
 bootm 0x100000 - 0x0f000000
 ```
 
