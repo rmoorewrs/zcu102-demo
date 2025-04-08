@@ -1,13 +1,32 @@
 #!/bin/sh
 
-# check that this is a valid VxWorks dev shell
-if [ -z "$WIND_RELEASE_ID" ]; then echo "WR Dev Shell Not detected, run \<install_dir\>/wrenv.sh -p vxworks/24.03 first";return -1; else echo "VxWorks Release $WIND_RELEASE_ID detected"; fi
+# set this for your network
+export DEV_IP=10.10.11.30
+export SERVER_IP=10.10.11.52
+export GATEWAY_IP=10.10.11.1
+export NETMASK=255.255.255.0
+export NETMASKHEX=ffffff00
+export NETMASKCIDR=24
 
-export VXWORKS_VERSION=25.03
+# Uncomment exports for one version
+# VxWorks 24.03
+export VXWORKS_VERSION=24.03
 export PROJECT_NAME=zynqmp_r5
-export BSP_NAME=amd_zynqmp_r5_2_0_5_1
-export DTS_FILE=amd-zcu102-r5-rev-1.1.dts
+export BSP_NAME=xlnx_zynqmp_r5_2_0_5_0
+export DTS_FILE=xlnx-zcu102-r5-rev-1.1.dts
+
+# VxWorks 25.03
+#export VXWORKS_VERSION=25.03
+#export PROJECT_NAME=zynqmp_r5
+#export BSP_NAME=amd_zynqmp_r5_2_0_5_1
+#export DTS_FILE=amd-zcu102-r5-rev-1.1.dts
+
+# check that this is a valid VxWorks dev shell
+if [ -z "$WIND_RELEASE_ID" ]; then echo "WR Dev Shell Not detected, run \<install_dir\>/wrenv.sh -p vxworks/${VXWORKS_VERSION} first";return -1; else echo "VxWorks Release $WIND_RELEASE_ID detected"; fi
+
+
 export PATCH_FILE=zynqmp_r5_eth_dts.patch
+
 
 # set current directory as workspace
 export MY_WS_DIR=$(pwd)
@@ -20,8 +39,8 @@ generate_patch_file()
 {
 
 cat << EOF > $1
---- amd-zcu102-r5-rev-1.1.dts
-+++ amd-zcu102-r5-rev-1.1.dts.modified
+--- ${DTS_FILE}
++++ dontcare.dts.modified
 @@ -30,10 +30,18 @@
          device_type = "memory";
          reg = <0x78000000 0x08000000>;
@@ -38,7 +57,7 @@ cat << EOF > $1
      chosen
          {
 -        bootargs = "gem(0,0)host:vxWorks h=192.168.1.1 e=192.168.1.6:ffffff00 g=192.168.1.1 u=a pw=a";
-+        bootargs = "gem(0,0)host:vxWorks h=10.10.15.52 e=10.10.15.30:ffffff00 g=10.10.15.1 u=a pw=a";
++        bootargs = "gem(0,0)host:vxWorks h=${SERVER_IP} e=${DEV_IP}:${NETMASKHEX} g=${GATEWAY_IP} u=a pw=a";
          stdout-path = "serial0";
          };
 EOF
@@ -61,7 +80,7 @@ vxprj vip component add $VIP_NAME INCLUDE_STANDALONE_DTB
 vxprj vip component add $VIP_NAME INCLUDE_DEBUG_AGENT_START
 vxprj vip component add $VIP_NAME INCLUDE_IPWRAP_IFCONFIG
 vxprj vip component add $VIP_NAME INCLUDE_IFCONFIG
-vxprj vip parameter set $VIP_NAME IFCONFIG_1 '"ifname gem0","devname gem","inet 10.10.15.30/24","gateway 10.10.15.1"'
+vxprj vip parameter set $VIP_NAME IFCONFIG_1 '"ifname gem0","devname gem","inet ${DEV_IP}/${NETMASKCIDR}","gateway ${GATEWAY_IP}"'
 vxprj vip component add $VIP_NAME INCLUDE_PING
 vxprj vip component add $VIP_NAME INCLUDE_IPPING_CMD
 vxprj vip component add $VIP_NAME INCLUDE_IPTELNETS

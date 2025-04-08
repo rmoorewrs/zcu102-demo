@@ -1,12 +1,31 @@
 #!/bin/sh
 
+# set this for your network
+export DEV_IP=10.10.11.30
+export SERVER_IP=10.10.11.52
+export GATEWAY_IP=10.10.11.1
+export NETMASK=255.255.255.0
+export NETMASKHEX=ffffff00
+export NETMASKCIDR=24
+
+
+# Uncomment exports for one version
+# VxWorks 24.03
+export VXWORKS_VERSION=24.03
+export PROJECT_NAME=zynqmp_a53
+export BSP_NAME=xlnx_zynqmp_3_0_1_0
+export DTS_FILE=xlnx-zcu102-rev-1.1.dts
+
+
+# VxWorks 25.03
+#export VXWORKS_VERSION=25.03
+#export PROJECT_NAME=zynqmp_a53
+#export BSP_NAME=amd_zynqmp_3_0_1_1
+#export DTS_FILE=amd-zcu102-rev-1.1.dts
+
 # check that this is a valid VxWorks dev shell
 if [ -z "$WIND_RELEASE_ID" ]; then echo "WR Dev Shell Not detected, run \<install_dir\>/wrenv.sh -p vxworks/${VXWORKS_VERSION} first";return -1; else echo "VxWorks Release $WIND_RELEASE_ID detected"; fi
 
-export VXWORKS_VERSION=25.03
-export PROJECT_NAME=zynqmp_a53
-export BSP_NAME=amd_zynqmp_3_0_1_1
-export DTS_FILE=amd-zcu102-rev-1.1.dts
 export PATCH_FILE=zynqmp_a53_dts.patch
 
 # set current directory as workspace
@@ -20,8 +39,8 @@ generate_patch_file()
 {
 
 cat << EOF > $1
---- amd-zcu102-rev-1.1.dts
-+++ amd-zcu102-rev-1.1.dts.modified
+--- ${DTS_FILE}
++++ dont-care.dts.modified
 @@ -28,13 +28,20 @@
      memory@0
          {
@@ -41,7 +60,7 @@ cat << EOF > $1
      chosen
          {
 -        bootargs = "gem(0,0)host:vxWorks h=192.168.1.2 e=192.168.1.6:ffffff00 g=192.168.1.1 u=target pw=vxTarget";
-+        bootargs = "gem(0,0)host:vxWorks h=10.10.15.52:ffffff00 e=10.10.15.30:ffffff00 g=10.10.15.1 u=target pw=vxTarget";
++        bootargs = "gem(0,0)host:vxWorks h=${SERVER_IP} e=${DEV_IP}:${NETMASKHEX} g=${GATEWAY_IP} u=target pw=vxTarget";
          stdout-path = "serial0";
          };
      };
@@ -50,12 +69,11 @@ EOF
 }
 
 
-#if false; then
 # build the VSB
 vxprj vsb create -lp64 -bsp ${BSP_NAME} ${VSB_NAME} -force -S 
 cd ${VSB_NAME}
 vxprj vsb build -j
-#fi
+
 
 
 # create, configure and build VIP
@@ -68,7 +86,7 @@ vxprj vip component add $VIP_NAME INCLUDE_STANDALONE_DTB
 vxprj vip component add $VIP_NAME INCLUDE_DEBUG_AGENT_START
 vxprj vip component add $VIP_NAME INCLUDE_IPWRAP_IFCONFIG
 vxprj vip component add $VIP_NAME INCLUDE_IFCONFIG
-vxprj vip parameter set $VIP_NAME IFCONFIG_1 '"ifname gem0","devname gem","inet 10.10.15.30/24","gateway 10.10.15.1"'
+vxprj vip parameter set $VIP_NAME IFCONFIG_1 '"ifname gem0","devname gem","inet ${DEV_IP}/${NETMASKCIDR}","gateway ${GATEWAY_IP}"'
 vxprj vip component add $VIP_NAME INCLUDE_PING
 vxprj vip component add $VIP_NAME INCLUDE_IPPING_CMD
 vxprj vip component add $VIP_NAME INCLUDE_IPTELNETS
@@ -108,4 +126,5 @@ cd ..
 vxprj vip build 
 cd $MY_WS_DIR
 
+echo Done. Remember to copy this to your tftpboot directory
 echo cp zynqmp_a53-vip/default/vxWorks.bin /tftpboot/vxWorks_a53.bin
